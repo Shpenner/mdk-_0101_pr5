@@ -49,5 +49,37 @@ namespace pr5
                 CreateStudent(Step, Count);
             }
         }
+        private void btnAdd_Click(object sender, RoutedEventArgs e)
+        {
+            var dialog = new AddStudentWindow { Owner = this };
+            if (dialog.ShowDialog() == true && dialog.NewStudent != null)
+            {
+                // Добавляем в общую коллекцию
+                AllStudent.Add(dialog.NewStudent);
+
+                // Сразу отображаем в UI (в конец списка)
+                parent.Children.Add(new Elements.Student(dialog.NewStudent));
+
+                // Корректируем Step, чтобы автоподгрузка не дублировала
+                // элемент (т.к. он уже добавлен вручную)
+                Step = AllStudent.Count;
+
+                // Прокручиваем вниз, чтобы пользователь увидел новую запись
+                var scroll = FindScrollViewer(parent);
+                scroll?.ScrollToEnd();
+            }
+        }
+
+        private static ScrollViewer FindScrollViewer(DependencyObject parent)
+        {
+            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(parent); i++)
+            {
+                var child = VisualTreeHelper.GetChild(parent, i);
+                if (child is ScrollViewer sv) return sv;
+                var result = FindScrollViewer(child);
+                if (result != null) return result;
+            }
+            return null;
+        }
     }
 }
