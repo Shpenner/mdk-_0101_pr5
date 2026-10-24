@@ -20,9 +20,15 @@ namespace pr5.Elements
     /// </summary>
     public partial class Student : UserControl
     {
-        public Student()
+        public Student(Classes.Student student)
         {
             InitializeComponent();
+
+            tb_fio.Content = student.GetFIO();
+
+            tb_scholarship.Content = student.Scholarship ? "Стипендия: получает" : "Стипендия: не получает";
+
+            tb_course.Content = $"Курс: {student.Course}";
         }
     }
 }
